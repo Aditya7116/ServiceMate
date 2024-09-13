@@ -1,0 +1,13 @@
+/* Frosted Glass Effect for Carousel Caption */
+.carousel-caption {
+    backdrop-filter: blur(10px) brightness(0.8); /* Blur and adjust brightness */
+    background: rgba(255, 255, 255, 0.2); /* Semi-transparent white background */
+    border-radius: 10px; /* Rounded corners for a smooth look */
+    padding: 1rem; /* Add padding for spacing */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional shadow for more depth */
+}
+
+/* Optional: Adjust text color for better readability */
+.carousel-caption h5, .carousel-caption p {
+    color: #fff; /* White text for contrast */
+}

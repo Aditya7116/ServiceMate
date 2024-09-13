@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block 'main' %}
+<h1>Book Appointment</h1>
+
+<!-- Error Alert -->
+{% if messages %}
+    {% for message in messages %}
+        <div id="error-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <td><label for="date" class="form-label">Date</label></td>
+                <td>
+                    <input type="date" id="date" name="date" class="form-control" required>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="time_slot" class="form-label">Time Slot</label></td>
+                <td>
+                    <select id="time_slot" name="time_slot" class="form-select" required>
+                        <option value="8-10">8:00 AM to 10:00 AM</option>
+                        <option value="11-1">11:00 AM to 1:00 PM</option>
+                        <option value="2-4">2:00 PM to 4:00 PM</option>
+                        <option value="5-7">5:00 PM to 7:00 PM</option>
+                        <option value="8-10pm">8:00 PM to 10:00 PM</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="service" class="form-label">Service</label></td>
+                <td>
+                    <select id="service" name="service" class="form-select" required>
+                        <option value="cleaning">Cleaning</option>
+                        <option value="plumbing">Plumbing</option>
+                        <option value="technician">Technician</option>
+                        <option value="carpentry">Carpentry</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="address" class="form-label">Address</label></td>
+                <td>
+                    <textarea id="address" name="address" class="form-control" rows="3" required></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="customer_name" class="form-label">Your Name</label></td>
+                <td>
+                    <input type="text" id="customer_name" name="customer_name" class="form-control" required>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="customer_email" class="form-label">Your Email</label></td>
+                <td>
+                    <input type="text" id="customer_email" name="customer_email" class="form-control" required>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="customer_contact" class="form-label">Phone Number</label></td>
+                <td>
+                    <input type="tel" id="customer_contact" name="customer_contact" class="form-control" required
+                           pattern="[0-9]{10}" title="Please enter a valid 10-digit phone number">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="text-center">
+                    <button type="submit" class="btn btn-primary">Confirm to Pay</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</form>
+
+<!-- JavaScript to handle the error message popup -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const errorAlert = document.getElementById('error-alert');
+
+        if (errorAlert) {
+            // Automatically hide the alert after 3 seconds
+            setTimeout(() => {
+                errorAlert.classList.remove('show');
+            }, 3000);
+        }
+
+        // Function to disable slots within 3 hours from now and booked slots
+        const dateInput = document.getElementById('date');
+        const timeSlotSelect = document.getElementById('time_slot');
+        const bookedSlots = {{ booked_slots|safe }};
+        const now = new Date();
+
+        // Ensure today can be set correctly, considering the 3-hour minimum rule
+        const minDate = new Date(now.getTime() + 3 * 60 * 60 * 1000); // Current time + 3 hours
+        dateInput.setAttribute('min', minDate.toISOString().split('T')[0]);
+
+        function disableSlots() {
+            const selectedDate = new Date(dateInput.value);
+            const now = new Date();
+            const minTime = new Date(now.getTime() + 3 * 60 * 60 * 1000); // 3 hours from now
+
+            timeSlotSelect.querySelectorAll('option').forEach(option => {
+                const [startHour] = option.value.split('-');
+                const slotStart = new Date(selectedDate);
+                slotStart.setHours(parseInt(startHour), 0, 0);
+
+                // Disable if the slot is before the minimum allowed time or already booked
+                if (slotStart < minTime || bookedSlots.some(([date, slot]) => date === dateInput.value && slot === option.value)) {
+                    option.disabled = true;
+                } else {
+                    option.disabled = false;
+                }
+            });
+        }
+
+        // Add event listeners to adjust slots based on date selection
+        dateInput.addEventListener('change', disableSlots);
+        disableSlots();  // Initial call
+    });
+</script>
+{% endblock 'main' %}

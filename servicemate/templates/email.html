@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .email-container {
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        .email-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .email-header img {
+            max-width: 150px;
+            margin-bottom: 10px;
+        }
+        .email-header h1 {
+            color: #333333;
+            font-size: 24px;
+            margin: 0;
+        }
+        .email-body {
+            margin-bottom: 20px;
+        }
+        .email-body p {
+            color: #555555;
+            line-height: 1.6;
+            margin: 10px 0;
+        }
+        .email-footer {
+            text-align: center;
+            color: #777777;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <img src="{{ company_logo_url }}" alt="Company Logo">
+            <h1>ServiceMate</h1>
+        </div>
+        <div class="email-body">
+            <p>Hi {{ customer_name }},</p>
+            <p>Thank you for booking with ServiceMate.</p>
+            <p>Your {{ appointment.service }} is confirmed for {{ appointment.time_slot }} on {{ appointment.get_time_slot_display }}.</p>
+            <p>If you need to make changes to this appointment, please call {{ 9172732399 }} or reply to this email.</p>
+            <p>Thank you for your business,</p>
+            <p>ServiceMate</p>
+            <p>Email:  Adityavibhute10@gmail.com<br>
+               Phone:  912732399 </p>
+        </div>
+        <div class="email-footer">
+            <p>Thank you for choosing ServiceMate!</p>
+        </div>
+    </div>
+</body>
+</html>

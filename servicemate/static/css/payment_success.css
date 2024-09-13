@@ -1,0 +1,92 @@
+/* payment_success.css */
+
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa; /* Light grey background */
+    margin: 0;
+    padding: 0;
+}
+
+/* Container for content */
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #ffffff; /* White background */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Success Message */
+.success-message {
+    text-align: center;
+    color: #28a745; /* Bootstrap success green */
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+/* Information Panel */
+.info-panel {
+    background-color: #e9f7ef; /* Light green background */
+    padding: 15px;
+    border-left: 4px solid #28a745; /* Green border on the left */
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Button Styling */
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff; /* Bootstrap primary blue */
+    color: #ffffff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* Darker blue */
+}
+
+/* Table Styles */
+.table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.table th, .table td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.table th {
+    background-color: #f1f1f1; /* Light grey */
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9; /* Slightly lighter grey for striped effect */
+}
+
+/* Link Styles */
+a {
+    color: #007bff; /* Bootstrap link color */
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+

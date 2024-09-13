@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'main' %}
+<div class="container mt-5">
+    <h1 class="mb-4">Contact Us</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <h4>Get in Touch</h4>
+            <form method="post" action="{% url 'contact' %}">
+                {% csrf_token %}
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <td><label for="name" class="form-label">Full Name</label></td>
+                            <td><input type="text" class="form-control" id="name" name="name" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="email" class="form-label">Email Address</label></td>
+                            <td><input type="email" class="form-control" id="email" name="email" required></td>
+                        </tr>
+                        <tr>
+                            <td><label for="phone" class="form-label">Phone Number</label></td>
+                            <td><input type="tel" class="form-control" id="phone" name="phone"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="subject" class="form-label">Subject</label></td>
+                            <td><input type="text" class="form-control" id="subject" name="subject"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="message" class="form-label">Message</label></td>
+                            <td><textarea class="form-control" id="message" name="message" rows="5" required></textarea></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <h4>Our Contact Information</h4>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td><i class="bi bi-telephone"></i></td>
+                        <td>Phone: 9172732399</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-envelope"></i></td>
+                        <td>Email: Adityavibhute10@gmail.com</td>
+                    </tr>
+                    <tr>
+                        <td><i class="bi bi-geo-alt"></i></td>
+                        <td>Address: A-12, 2nd Floor, Hariom Residency, Pandharpur, Maharashtra, India</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock 'main' %}

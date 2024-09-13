@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .receipt-container {
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+        .receipt-header {
+            margin-bottom: 30px;
+        }
+        .receipt-header h1 {
+            color: #333333;
+            font-size: 24px;
+            margin: 0;
+            text-align: left; /* Align text to the left */
+        }
+        .receipt-header p {
+            color: #666666;
+            font-size: 16px;
+            margin: 5px 0;
+            text-align: left; /* Align text to the left */
+        }
+        .receipt-details {
+            margin-bottom: 30px;
+        }
+        .receipt-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .receipt-details th, .receipt-details td {
+            border: 1px solid #dddddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .receipt-details th {
+            background-color: #f9f9f9;
+            color: #333333;
+        }
+        .receipt-details td {
+            color: #555555;
+        }
+        .receipt-footer {
+            text-align: center;
+        }
+        .receipt-footer p {
+            color: #777777;
+            font-size: 14px;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-container">
+        <div class="receipt-header">
+            <h1>ServiceMate</h1>
+            <p>123 Service Lane<br>Pandharpur City, IN 413304  </p> 
+        </div>
+        <div class="receipt-details">
+            <table>
+                <tr>
+                    <th>Appointment ID</th>
+                    <td>{{ appointment.id }}</td>
+                </tr>
+                <tr>
+                    <th>Customer Name</th>
+                    <td>{{ appointment.customer_name }}</td>
+                </tr>
+                <tr>
+                    <th>Email ID</th>
+                    <td>{{ appointment.customer_email }}</td>
+                </tr>
+                <tr>
+                    <th>Service</th>
+                    <td>{{ appointment.service }}</td>
+                </tr>
+                <tr>
+                    <th>Time Slot</th>
+                    <td>{{ appointment.time_slot}}</td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ appointment.date }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ appointment.address }}</td>
+                </tr>
+               
+                <tr>
+                    <th>Payment ID</th>
+                    <td>{{ payment.payment_id }}</td>
+                </tr>
+                <tr>
+                    <th>Payment Status</th>
+                    <td>{{ appointment.payment_status }}</td>
+                </tr>
+                <tr>
+                    <th>Amount</th>
+                    <td>{{ 200 }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="receipt-footer">
+            <p>Thank you for choosing ServiceMate!</p>
+        </div>
+    </div>
+</body>
+</html>

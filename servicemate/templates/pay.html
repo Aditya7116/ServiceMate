@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+<head>     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}"> </head>
+{% block 'main' %}
+
+{% if messages %}
+    {% for message in messages %}
+        <div id="error-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Complete Your Payment</h1>
+
+    <!-- Appointment Details -->
+    <div class="appointment-details mb-4 p-4 border rounded bg-light shadow">
+        <h3 class="mb-3">Appointment Details</h3>
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <td><strong>Service:</strong></td>
+                    <td>{{ appointment.service|title }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Date:</strong></td>
+                    <td>{{ appointment.date }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Time Slot:</strong></td>
+                    <td>{{ appointment.time_slot }}</td> <!-- AM/PM format -->
+                </tr>
+                <tr>
+                    <td><strong>Address:</strong></td>
+                    <td>{{ appointment.address }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Name:</strong></td>
+                    <td>{{ appointment.customer_name }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Contact:</strong></td>
+                    <td>{{ appointment.customer_contact }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Information Message -->
+    <div class="alert alert-info mb-4">
+        <p><strong>Note:</strong> The amount of ₹200 that we are collecting is for visiting and inspecting charges. This fee is non-refundable and is required to proceed with the appointment.</p>
+    </div>
+
+    <!-- Payment Button -->
+    <div class="text-center">
+        <button id="rzp-button1" class="btn btn-success btn-lg">Pay with Razorpay</button>
+    </div>
+
+    <!-- Razorpay Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+            "key": "rzp_test_sxDYsbjuSTbO5c",  // Your Razorpay key from context
+            "amount": "20000",  // Ensure amount is in paise
+            "currency": "INR",
+            "name": "ServiceMate",
+            "description": "Payment for {{ appointment.service|title }}",
+            "image": "{% static 'images/logo.jpg' %}",  // Ensure this image exists
+            "order_id": "{{ razorpay_order_id }}",  // Use Razorpay order ID from context
+            "handler": function (response) {
+                window.location.href = "{% url 'payment_success' %}?order_id=" + response.razorpay_order_id + "&payment_id=" + response.razorpay_payment_id;
+            },
+            "prefill": {
+                "name": "{{ appointment.customer_name }}",  // Fetching user's name
+                "email": "{{ user.email }}",    // Fetching user's email
+                "contact": "{{ appointment.customer_contact }}"  // Assuming correct contact number
+            },
+            "notes": {
+                "address": "{{ appointment.address }}",
+                "service_type": "{{ appointment.service }}"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.on('payment.failed', function (response) {
+            alert("Payment failed. Please try again.");
+            console.log(response.error.description);  // Improved error logging
+        });
+        document.getElementById('rzp-button1').onclick = function(e) {
+            rzp1.open();
+            e.preventDefault();
+        }
+    </script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</div>
+
+{% endblock 'main' %}

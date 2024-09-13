@@ -1,0 +1,17 @@
+footer{
+width: 100%;
+position: relative;
+background-color: #deded5;
+padding: 1.5rem 0;
+}
+
+.footer-content {
+margin: 0 auto;
+max-width: 1200px; /* Adjust this value as needed for alignment */
+padding: 0 1rem; /* Optional padding for alignment */
+}
+
+/* Ensure the footer text alignment is centered */
+.footer-content h5, .footer-content p {
+text-align: center;
+}

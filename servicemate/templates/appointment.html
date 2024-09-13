@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'main' %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Appointment History</h1>
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Time Slot</th>
+                            <th>Service</th>
+                            <th>Address</th>
+                            <th>Customer Name</th>
+                            <th>Payment Status</th>
+                            <th>Receipt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                            <tr>
+                                <td>{{ appointment.date }}</td>
+                                <td>{{ appointment.get_time_slot_display }}</td>
+                                <td>{{ appointment.get_service_display }}</td>
+                                <td>{{ appointment.address }}</td>
+                                <td>{{ appointment.customer_name }}</td>
+                                <td>{{ appointment.payment_status }}</td>
+                                <td>
+                                    <!-- Add download link for receipt -->
+                                    <a href="{% url 'download_receipt' appointment.id %}" class="btn btn-primary btn-sm">
+                                        Download Receipt
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-info">You have no appointments.</p>
+        {% endif %}
+    </div>
+{% endblock 'main' %}
