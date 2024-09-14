@@ -8,7 +8,7 @@ from django.contrib.auth import login, logout, authenticate
 import os
 from django.contrib.auth.models import User
 from django.contrib import messages
-from .models import Appointment, Payment
+from .models import Appointment, Payment,Service
 import razorpay
 from razorpay import Client
 from django.conf import settings
@@ -36,8 +36,9 @@ razorpay_client = Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_S
 
 logger = logging.getLogger(__name__)
 
-def home(request):
-    return render(request, 'index.html')
+def index(request):
+    services = Service.objects.all()
+    return render(request, 'index.html', {'services': services})
 
 def registerUser(request):
     if request.method == "GET":
@@ -108,13 +109,25 @@ def contact(request):
 def about(request):
     return render(request, 'about.html')
 
+def search_results(request):
+    query = request.GET.get('query')
+    if query:
+        results = Service.objects.filter(name__icontains=query)  # Adjust the field as needed
+    else:
+        results = Service.objects.none()  # Return an empty queryset if no query
+
+    return render(request, 'search_results.html', {'results': results, 'query': query})
+
+
 
 @login_required
 def book_appointment(request):
+    services = Service.objects.all()  # Fetch all services
+
     if request.method == 'POST':
         # Retrieve form data
         customer_name = request.POST.get('customer_name')
-        customer_email = request.POST.get('customer_email')  # Capture the email correctly
+        customer_email = request.POST.get('customer_email')  
         date_str = request.POST.get('date')
         time_slot_str = request.POST.get('time_slot')
         service = request.POST.get('service')
@@ -122,21 +135,19 @@ def book_appointment(request):
         customer_contact = request.POST.get('customer_contact')
 
         # Debugging print statements
-        print("Customer Email:", customer_email)  # Check the captured email value
+        print("Customer Email:", customer_email)
 
         # Ensure all fields are filled
         if not all([customer_name, customer_email, date_str, time_slot_str, service, address, customer_contact]):
             messages.error(request, 'All fields are required, including email.')
-            return redirect('book_appointment')
+            return render(request, 'bookappoint.html', {'services': services})  # Render the form with services and error message
 
         try:
-            # Parse the date correctly
             date = datetime.strptime(date_str, '%Y-%m-%d').date()
 
-            # Ensure appointment time slot logic is correct and unique
             if Appointment.objects.filter(date=date, time_slot=time_slot_str, service=service, payment_status=True).exists():
                 messages.error(request, 'This time slot for the selected service is already booked.')
-                return redirect('book_appointment')
+                return render(request, 'bookappoint.html', {'services': services})  # Render the form with services and error message
 
             # Create and save the appointment
             appointment = Appointment.objects.create(
@@ -155,17 +166,24 @@ def book_appointment(request):
             return redirect('process_payment', appointment_id=appointment.id)
 
         except ValueError as e:
-            # Handle parsing errors
+            # Handle parsing errors (e.g., invalid date format)
             messages.error(request, f'Invalid input: {str(e)}')
-            return redirect('book_appointment')
+            return render(request, 'bookappoint.html', {'services': services})  # Render the form with services and error message
 
+    # For GET requests, show the form and booked slots
     booked_appointments = Appointment.objects.filter(payment_status=True)
     booked_slots = [(appointment.date.strftime('%Y-%m-%d'), appointment.time_slot) for appointment in booked_appointments]
+    
+    # Extract the selected service from the query parameters or set default to 'cleaning'
+    selected_service = request.GET.get('service', 'cleaning')
 
     context = {
         'booked_slots': booked_slots,
+        'services': services,
+        'selected_service': selected_service  # Pass selected_service to the template
     }
     return render(request, 'bookappoint.html', context)
+
 
 
 
@@ -179,11 +197,13 @@ razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZOR
 
 def generate_unique_order_id():
     while True:
-        # Generate a random order ID (e.g., a 6-digit number)
+      
         order_id = random.randint(100000, 999999)
-        # Check if the order ID already exists
+        
         if not Payment.objects.filter(order_id=order_id).exists():
             return order_id
+        
+        
         
         
 @login_required
@@ -282,13 +302,14 @@ config = pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkh
 
 
 
+
 def generate_and_save_receipt(appointment):
     # Generate the receipt content using a Django template
     receipt_content = render_to_string('receipt.html', {'appointment': appointment})
 
     # Define paths and settings
-    receipts_dir = os.path.join(settings.MEDIA_ROOT, 'receipts')  # Ensure MEDIA_ROOT is correctly set in settings.py
-    os.makedirs(receipts_dir, exist_ok=True)  # Create the directory if it doesn't exist
+    receipts_dir = os.path.join(settings.MEDIA_ROOT, 'receipts') 
+    os.makedirs(receipts_dir, exist_ok=True)  
     pdf_filename = f'receipt_{appointment.id}.pdf'
     pdf_path = os.path.join(receipts_dir, pdf_filename)
 
@@ -298,31 +319,33 @@ def generate_and_save_receipt(appointment):
     }
     pdfkit.from_string(receipt_content, pdf_path, options=pdfkit_options, configuration=pdfkit.configuration(wkhtmltopdf=settings.PDFKIT_CONFIG['wkhtmltopdf']))
 
-    # Save the path of the receipt in the Appointment model
-    appointment.receipt = pdf_filename  # Assuming 'receipt' is a FileField or CharField in your model
+    
+    appointment.receipt = pdf_filename  
     appointment.save()
 
     return pdf_path
 
 
-def send_receipt(request, appointment, payment_id):
-    # Define the subject and recipient
+def send_receipt(request, appointment, payment_id,):
+    
     subject = 'Payment Successful'
     recipient_email = appointment.customer_email
 
-    # Render the HTML template for the receipt email
+   
     email_body = render_to_string('email.html', {
         'company_logo_url': 'http://127.0.0.1:8000/static/images/logo.png',
         'recipient_name': appointment.customer_name,
         'appointment_id': appointment.id,
+        'payment_id': payment_id,
+       
     })
 
-    # Prepare the email
+  
     try:
-        # Create the email message
+       
         email = EmailMultiAlternatives(
             subject=subject,
-            body='',  # This will be replaced by the HTML part
+            body='',  
             from_email=settings.DEFAULT_FROM_EMAIL,
             to=[recipient_email]
         )
@@ -338,15 +361,14 @@ def send_receipt(request, appointment, payment_id):
             # Handle the case where the receipt file does not exist
             return HttpResponse(f'Receipt file not found: {receipt_filename}', status=404)
 
-        # Send the email
+       
         email.send()
 
     except Exception as e:
-        # Return an error response if something goes wrong
+        
         return HttpResponse(f'Error sending email: {e}', status=500)
 
-    # Render a success page
-    return render(request, 'payment_success.html', {'appointment': appointment, 'payment_id': payment_id})
+    return render(request, 'payment_success.html', {'appointment': appointment, 'payment_id': payment_id,})
 
 
     
@@ -374,5 +396,7 @@ def download_receipt(request, appointment_id):
     if not os.path.exists(file_path):
         raise Http404("Receipt not found")
     
-    # Serve the file
+  
+  
+  
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=f'receipt_{appointment_id}.pdf')

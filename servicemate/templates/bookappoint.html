@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block 'main' %}
 <h1>Book Appointment</h1>
 
@@ -38,10 +38,9 @@
                 <td><label for="service" class="form-label">Service</label></td>
                 <td>
                     <select id="service" name="service" class="form-select" required>
-                        <option value="cleaning">Cleaning</option>
-                        <option value="plumbing">Plumbing</option>
-                        <option value="technician">Technician</option>
-                        <option value="carpentry">Carpentry</option>
+                        {% for service in services %}
+                            <option value="{{ service.name|lower }}" {% if service.name|lower == selected_service %}selected{% endif %}>{{ service.name }}</option>
+                        {% endfor %}
                     </select>
                 </td>
             </tr>
@@ -60,7 +59,7 @@
             <tr>
                 <td><label for="customer_email" class="form-label">Your Email</label></td>
                 <td>
-                    <input type="text" id="customer_email" name="customer_email" class="form-control" required>
+                    <input type="email" id="customer_email" name="customer_email" class="form-control" required>
                 </td>
             </tr>
             <tr>
@@ -79,11 +78,11 @@
     </table>
 </form>
 
-<!-- JavaScript to handle the error message popup -->
+<!-- Custom Script -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // JavaScript to handle the error message popup
         const errorAlert = document.getElementById('error-alert');
-
         if (errorAlert) {
             // Automatically hide the alert after 3 seconds
             setTimeout(() => {

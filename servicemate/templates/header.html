@@ -43,48 +43,53 @@
 <body>
     <!-- Full-Width Header -->
     <header>
-        <nav class="navbar navbar-expand-xl navbar-light" style="background-color: #f8f9fa;">
-
-            <div class="container-fluid"> <!-- Ensuring full width with container-fluid -->
-                <a class="navbar-brand" href="#">ServiceMate</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'about' %}">About Us</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav ms-auto">
-                        {% if user.is_authenticated %}
+        <header>
+            <nav class="navbar navbar-expand-xl navbar-light" style="background-color: #f8f9fa">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="#">ServiceMate</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto d-flex align-items-center">
+                            <!-- Minimal Search Bar -->
+                            <li class="nav-item me-2 search-bar">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Search for services...">
+                            </li>
+                            {% if user.is_authenticated %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'appointment_history' %}">Appointment History</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{% url 'bookappointment' %}" style="color: teal;">Book Appointment</a>
+                                <a class="nav-link" href="{% url 'bookappointment' %}" style="color: teal">Book Appointment</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'logout' %}">Logout</a>
                             </li>
-                        {% else %}
+                            {% else %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'register' %}">Register</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'login' %}">Login</a>
                             </li>
-                        {% endif %}
-                    </ul>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </header>
     </header>
 
    
